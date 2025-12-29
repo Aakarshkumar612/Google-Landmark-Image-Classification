@@ -1,20 +1,27 @@
-# Google Landmark Image Classification 🌍
+# 🌍 Google Landmark Image Classification
 
-An end-to-end AI project that identifies global landmarks with high accuracy using Deep Learning (PyTorch), NLP, and Generative AI.
+An AI-powered application that identifies global landmarks from photos with high accuracy. This project leverages Deep Learning for classification and provides an interactive web interface for real-time predictions.
 
-## 🚀 Features
-- **Deep Learning**: CNN-based classification for 50+ landmark categories.
-- **GenAI Integration**: Provides historical context for each identified landmark.
-- **FastAPI Backend**: Robust and scalable server logic.
-- **Modern UI**: Interactive interface built with NiceGUI.
+## 🚀 Live Demo
+You can try the live application hosted on **Hugging Face Spaces** here:
+[Insert Your Hugging Face Space Link Here]
+
+## ✨ Features
+- **Landmark Recognition**: Uses a Convolutional Neural Network (CNN) to identify 50+ famous landmarks.
+- **Interactive UI**: A clean, user-friendly interface built with **Gradio**.
+- **NLP & GenAI Integration**: (Optional: Mention if you are using GenAI to provide descriptions of the landmarks).
+- **Instant Deployment**: Seamlessly hosted on Hugging Face for global accessibility.
 
 ## 🛠️ Tech Stack
-- **Languages**: Python
-- **AI/ML**: PyTorch, Torchvision, Transformers
-- **Frontend/API**: FastAPI, NiceGUI
-- **Deployment**: Render.com
+- **AI Framework**: PyTorch / TensorFlow
+- **Interface**: Gradio
+- **Deployment**: Hugging Face Spaces
+- **Libraries**: OpenCV, PIL, NumPy, Matplotlib
 
-## 📦 Installation
-1. Clone the repo: `git clone https://github.com/Aakarshkumar612/Google-Landmark-Image-Classification.git`
-2. Install dependencies: `pip install -r requirements.txt`
-3. Run locally: `python app.py`
+## 📦 Project Structure
+```text
+├── app.py              # Main Gradio application script
+├── models/             # Trained model weights (.pt or .h5)
+├── data/               # Metadata and sample images
+├── requirements.txt    # Dependencies for deployment
+└── README.md           # Project documentation
