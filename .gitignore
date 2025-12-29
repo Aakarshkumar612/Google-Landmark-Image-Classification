@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.env
+
+# Large Model files (Optional: GitHub has a 100MB limit)
+# If your model is > 100MB, don't push it; use Git LFS or download it via code.
+model/*.pt
+model/*.h5
+
+# OS files
+.DS_Store
