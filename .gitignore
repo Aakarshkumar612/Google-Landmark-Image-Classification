@@ -1,13 +1,12 @@
-# Python
-__pycache__/
-*.py[cod]
-venv/
+# Environment secrets
 .env
 
-# Large Model files (Optional: GitHub has a 100MB limit)
-# If your model is > 100MB, don't push it; use Git LFS or download it via code.
-model/*.pt
-model/*.h5
+# Python cache
+__pycache__/
+*.py[cod]
 
-# OS files
-.DS_Store
+# Local IDE settings
+.vscode/
+
+# Large Model files (Optional: keep if under 100MB, otherwise use LFS)
+# models/landmark_model.h5
