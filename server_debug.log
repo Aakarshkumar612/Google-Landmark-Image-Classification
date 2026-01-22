@@ -20,3 +20,5 @@ LLM init finished
 [DEBUG] Retrieved history length: 735
 LLM init started (background)
 LLM init finished
+[DEBUG] Predicted: Eiffel Tower (confidence=0.9029969573020935)
+[DEBUG] Retrieved history length: 735

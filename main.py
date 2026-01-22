@@ -6,6 +6,8 @@ from src.engine import LandmarkEngine
 from starlette.formparsers import MultiPartParser
 import sys
 import threading
+import subprocess
+import json
 
 def _log(msg):
     try:
@@ -66,6 +68,20 @@ def main():
         ui.row().classes('w-full').style('margin-bottom: 8px')
         ui.button('Initialize LLM (optional)', on_click=lambda: start_llm_init()).classes('primary')
         ui.label('Tip: click "Initialize LLM" to enable richer text responses. Local data files work without initialization.').classes('text-subtitle2')
+        # LLM status + logs viewer
+        status_row = ui.row().classes('items-center q-gutter-sm')
+        with status_row:
+            status_label = ui.label('LLM status: Not initialized').classes('text-subtitle1')
+            status_spinner = ui.spinner(size='md').style('display: none')
+            ui.button('Show Logs', on_click=lambda: log_card.set_visibility(not log_card.visible)).classes('secondary')
+            # Heavy init and verify buttons
+            ui.button('Run Full Init (heavy)', on_click=lambda: _run_full_init_subprocess()).classes('secondary')
+            ui.button('Verify LLM', on_click=lambda: _verify_llm()).classes('secondary')
+        log_card = ui.card().classes('w-full bg-grey-50 q-pa-md').style('display: none; max-height: 320px; overflow: auto')
+        with log_card:
+            ui.label('server_debug.log').classes('text-subtitle2')
+            log_code = ui.code('', language='text').classes('w-full')
+
         result_card = ui.card().classes('w-full bg-blue-50 q-pa-md shadow-lg').style('display: none')
         with result_card:
             res_label = ui.label('').classes('text-h6 font-bold text-primary')
@@ -171,6 +187,115 @@ def main():
                 n.dismiss()
 
         ui.upload(on_upload=process_file, auto_upload=True, label="Upload Photo").classes('w-full')
+
+        # Poller: update status and logs periodically so user can watch init progress
+        def _tail_log(path, max_lines=400):
+            try:
+                with open(path, 'r', encoding='utf-8') as fh:
+                    lines = fh.read().splitlines()
+                if len(lines) > max_lines:
+                    return '\n'.join(lines[-max_lines:])
+                return '\n'.join(lines)
+            except Exception:
+                return ''
+
+        def _update_status_and_logs():
+            try:
+                if getattr(ai_guide, '_llm_init_running', False):
+                    status_label.set_text('LLM status: Initializing...')
+                    status_spinner.style('display: inline-block')
+                elif getattr(ai_guide, '_llm_initialized', False):
+                    status_label.set_text('LLM status: Initialized')
+                    status_spinner.style('display: none')
+                else:
+                    status_label.set_text('LLM status: Not initialized')
+                    status_spinner.style('display: none')
+
+                # update logs
+                content = _tail_log('server_debug.log', max_lines=400)
+                if content:
+                    log_code.set_text(content)
+            except Exception:
+                pass
+
+        ui.timer(1.0, _update_status_and_logs)
+
+        # Background subprocess runner for full init (writes output to server_debug.log)
+        def _run_full_init_subprocess():
+            if getattr(ai_guide, '_llm_init_running', False):
+                ui.notify('LLM init already running', timeout=2)
+                return
+
+            def _worker():
+                try:
+                    ai_guide._llm_init_running = True
+                    _log('Full init subprocess started')
+                    # run the init script and stream output to server_debug.log
+                    proc = subprocess.Popen([sys.executable, 'scripts/init_llm.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+                    for line in proc.stdout:
+                        _log(line.rstrip())
+                    proc.wait()
+                    _log(f'Full init subprocess exited with code {proc.returncode}')
+                    if proc.returncode == 0:
+                        ai_guide._llm_initialized = True
+                    # try to load into memory (best-effort)
+                    try:
+                        ai_guide._init_llm_models()
+                    except Exception as e:
+                        _log(f'Post-init load failed: {e}')
+                except Exception as e:
+                    _log(f'Full init subprocess error: {e}')
+                finally:
+                    ai_guide._llm_init_running = False
+
+            threading.Thread(target=_worker, daemon=True).start()
+
+        def _verify_llm():
+            # Try to ensure models are loaded and run a small query or return a local doc
+            try:
+                ui.notify('Verifying LLM/index — check logs for progress', timeout=3)
+                # Attempt to load LLM models into memory (non-blocking best-effort)
+                try:
+                    ai_guide._init_llm_models()
+                except Exception as e:
+                    _log(f'Verify: _init_llm_models raised: {e}')
+
+                # If chat engine is available, try a query
+                if getattr(ai_guide, 'chat_engine', None):
+                    try:
+                        resp = None
+                        try:
+                            resp = ai_guide.chat_engine.chat('Provide a short ENGLISH and HINDI summary for Taj Mahal')
+                        except Exception:
+                            try:
+                                resp = ai_guide.chat_engine.query('Provide a short ENGLISH and HINDI summary for Taj Mahal')
+                            except Exception:
+                                try:
+                                    resp = ai_guide.chat_engine.run('Provide a short ENGLISH and HINDI summary for Taj Mahal')
+                                except Exception:
+                                    resp = None
+                        _log(f'Verify: chat_engine response type: {type(resp)}')
+                        ui.notify('Verify: chat_engine query sent — check logs for response', timeout=3)
+                        return
+                    except Exception as e:
+                        _log(f'Verify chat query failed: {e}')
+
+                # Fallback: return first document from data/index_docs.json
+                try:
+                    with open('data/index_docs.json', 'r', encoding='utf-8') as fh:
+                        docs = json.load(fh)
+                    if docs:
+                        first = docs[0].get('text', '')
+                        # show truncated doc in notification and log
+                        ui.notify('Loaded local docs for verification (first doc shown in logs)', timeout=4)
+                        _log('Verify: first doc (truncated): ' + first[:500].replace('\n',' '))
+                        return
+                except Exception as e:
+                    _log(f'Verify fallback failed: {e}')
+
+                ui.notify('Verify: No chat_engine or local docs available', type='negative')
+            except Exception as e:
+                _log(f'Verify button error: {e}')
 
 if __name__ in {"__main__", "__mp_main__"}:
     print("\n" + "="*60)
