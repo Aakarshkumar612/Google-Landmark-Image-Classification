@@ -1,0 +1,7 @@
+METADATA: Eiffel Tower, Paris, France, Gustave Eiffel, Iron Lattice
+
+[ENGLISH SECTION]
+The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France. It is named after the engineer Gustave Eiffel, whose company designed and built the tower in 1889. It was originally constructed as the entrance arch to the 1889 World's Fair and is now a global cultural icon of France.
+
+[HINDI SECTION]
+एफिल टॉवर फ्रांस के पेरिस में चैंप डी मार्स पर स्थित एक लोहे की जाली वाला टॉवर है। इसका नाम इंजीनियर गुस्ताव एफिल के नाम पर रखा गया है, जिनकी कंपनी ने 1889 में इस टॉवर का डिजाइन और निर्माण किया था। इसे मूल रूप से 1889 के विश्व मेले के प्रवेश द्वार के रूप में बनाया गया था और अब यह फ्रांस का एक वैश्विक सांस्कृतिक प्रतीक है।
