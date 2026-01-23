@@ -57,6 +57,21 @@ Distributed under the MIT License. See LICENSE for more information.
 * **Modular Description**: It highlights the `src/` folder, which shows you understand software engineering patterns like **Separation of Concerns**.
 * **Clear Setup**: It provides the exact commands needed to get the app running, including the critical `.env` step.
 
+## LLM / RAG Status
+
+- **Current:** LLM (RAG/embeddings) initialization has not been completed in this repository by default. The app will still perform image classification using the local TensorFlow model in `models/landmark_model.h5` and will return bilingual landmark descriptions from local `data/*.txt` files.
+- **Implication:** Retrieval-augmented generation (chat, LLM-produced content, and similarity search using embeddings) will not be available until the heavy initialization step is run.
+- **To enable full LLM/RAG functionality:** run the heavy initializer which downloads embeddings and builds an index. From the repo root:
+
+```powershell
+conda activate landmark_project
+python scripts/init_llm.py 2>&1 | tee init_llm_output.log
+```
+
+- After successful completion, start the UI and verify via the `Run Full Init (heavy)` and `Verify LLM` buttons at http://127.0.0.1:8000, or inspect `server_debug.log` and `data/index_docs.json` for confirmation.
+
+If you prefer to keep the app lightweight and avoid large downloads, the current setup (local model + `data/*.txt`) is fully functional for classification and static bilingual descriptions.
+
 
 
 **Would you like me to help you create a `LICENSE` file for your repository to make it even more professional?**

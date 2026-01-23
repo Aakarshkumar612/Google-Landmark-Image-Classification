@@ -22,3 +22,102 @@ LLM init started (background)
 LLM init finished
 [DEBUG] Predicted: Eiffel Tower (confidence=0.9029969573020935)
 [DEBUG] Retrieved history length: 735
+llama_index not available
+HuggingFaceEmbedding not available
+Ollama LLM created
+LLM/embeddings initialization attempted (check logs for errors)
+[DEBUG] Predicted: Eiffel Tower (confidence=0.9029969573020935)
+[DEBUG] Retrieved history length: 735
+llama_index not available
+HuggingFaceEmbedding not available
+Ollama LLM created
+LLM/embeddings initialization attempted (check logs for errors)
+Verify: first doc (truncated): 
+Verify: first doc (truncated): 
+Full init subprocess started
+Ollama available: True
+HuggingFaceEmbedding available: False
+VectorStoreIndex available: False
+Skipping data\bridge.txt 'NoneType' object is not callable
+Skipping data\burj_khalifa.txt 'NoneType' object is not callable
+Skipping data\eiffel_tower.txt 'NoneType' object is not callable
+Skipping data\great_wall.txt 'NoneType' object is not callable
+Skipping data\red_fort.txt 'NoneType' object is not callable
+Skipping data\taj_mahal.txt 'NoneType' object is not callable
+No docs found in data/*.txt; aborting index build
+Full init subprocess exited with code 0
+[DEBUG] Predicted: Uncertain (confidence=0.6815073490142822)
+[DEBUG] Prediction uncertain
+Full init subprocess started
+Ollama available: True
+HuggingFaceEmbedding available: False
+VectorStoreIndex available: False
+Skipping data\bridge.txt 'NoneType' object is not callable
+Skipping data\burj_khalifa.txt 'NoneType' object is not callable
+Skipping data\eiffel_tower.txt 'NoneType' object is not callable
+Skipping data\great_wall.txt 'NoneType' object is not callable
+Skipping data\red_fort.txt 'NoneType' object is not callable
+Skipping data\taj_mahal.txt 'NoneType' object is not callable
+No docs found in data/*.txt; aborting index build
+Full init subprocess exited with code 0
+Verify: first doc (truncated): 
+Full init subprocess started
+Ollama available: True
+HuggingFaceEmbedding available: False
+VectorStoreIndex available: False
+Skipping data\bridge.txt 'NoneType' object is not callable
+Skipping data\burj_khalifa.txt 'NoneType' object is not callable
+Skipping data\eiffel_tower.txt 'NoneType' object is not callable
+Skipping data\great_wall.txt 'NoneType' object is not callable
+Skipping data\red_fort.txt 'NoneType' object is not callable
+Skipping data\taj_mahal.txt 'NoneType' object is not callable
+No docs found in data/*.txt; aborting index build
+Full init subprocess exited with code 0
+Verify: first doc (truncated): 
+Full init subprocess started
+Ollama available: True
+HuggingFaceEmbedding available: False
+VectorStoreIndex available: False
+Skipping data\bridge.txt 'NoneType' object is not callable
+Skipping data\burj_khalifa.txt 'NoneType' object is not callable
+Skipping data\eiffel_tower.txt 'NoneType' object is not callable
+Skipping data\great_wall.txt 'NoneType' object is not callable
+Skipping data\red_fort.txt 'NoneType' object is not callable
+Skipping data\taj_mahal.txt 'NoneType' object is not callable
+No docs found in data/*.txt; aborting index build
+Full init subprocess exited with code 0
+Verify: first doc (truncated): 
+[DEBUG] Predicted: Uncertain (confidence=0.6316748857498169)
+[DEBUG] Prediction uncertain
+Full init subprocess started
+Ollama available: True
+HuggingFaceEmbedding available: False
+VectorStoreIndex available: False
+Skipping data\bridge.txt 'NoneType' object is not callable
+Skipping data\burj_khalifa.txt 'NoneType' object is not callable
+Skipping data\eiffel_tower.txt 'NoneType' object is not callable
+Skipping data\great_wall.txt 'NoneType' object is not callable
+Skipping data\red_fort.txt 'NoneType' object is not callable
+Skipping data\taj_mahal.txt 'NoneType' object is not callable
+No docs found in data/*.txt; aborting index build
+Full init subprocess exited with code 0
+Full init subprocess started
+Ollama available: True
+HuggingFaceEmbedding available: False
+VectorStoreIndex available: False
+Skipping data\bridge.txt 'NoneType' object is not callable
+Skipping data\burj_khalifa.txt 'NoneType' object is not callable
+Skipping data\eiffel_tower.txt 'NoneType' object is not callable
+Skipping data\great_wall.txt 'NoneType' object is not callable
+Skipping data\red_fort.txt 'NoneType' object is not callable
+Skipping data\taj_mahal.txt 'NoneType' object is not callable
+No docs found in data/*.txt; aborting index build
+Full init subprocess exited with code 0
+Verify: first doc (truncated): 
+Verify: first doc (truncated): 
+Verify: first doc (truncated): 
+[DEBUG] Predicted: Eiffel Tower (confidence=0.9029969573020935)
+[DEBUG] Retrieved history length: 735
+Verify: first doc (truncated): 
+Verify: first doc (truncated): 
+Verify: first doc (truncated): 

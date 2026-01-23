@@ -2,11 +2,36 @@
 Init LLM/embeddings/index from local `data/*.txt` without loading TensorFlow model.
 Saves index via available API and writes `data/index_docs.json` as fallback.
 """
+"""
+Init LLM/embeddings/index from local `data/*.txt` without loading TensorFlow model.
+Saves index via available API and writes `data/index_docs.json` as fallback.
+"""
 import os
 import pathlib
 import json
+import traceback
 
 os.environ.setdefault('OLLAMA_HOST', os.environ.get('OLLAMA_HOST', '127.0.0.1:11434'))
+
+def _log(msg):
+    try:
+        print(msg, flush=True)
+    except Exception:
+        pass
+    try:
+        with open('server_debug.log', 'a', encoding='utf-8') as fh:
+            fh.write(str(msg) + '\n')
+    except Exception:
+        pass
+
+def _log_exc(prefix):
+    try:
+        tb = traceback.format_exc()
+        _log(f"{prefix}: {tb}")
+        with open('data/init_error.log', 'a', encoding='utf-8') as fh:
+            fh.write(f"{prefix}: {tb}\n")
+    except Exception:
+        pass
 
 try:
     from llama_index import VectorStoreIndex, Document
