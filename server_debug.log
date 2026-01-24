@@ -324,3 +324,5 @@ Skipping data\great_wall.txt 'NoneType' object is not callable
 Skipping data\red_fort.txt 'NoneType' object is not callable
 Skipping data\taj_mahal.txt 'NoneType' object is not callable
 No docs found in data/*.txt; aborting index build
+CNN Stage Result: Uncertain (0.6316746473312378)
+CNN Unsure. Activating LLM Vision Stage...
