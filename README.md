@@ -1,83 +1,148 @@
-# 🌍 Google Landmark AI Guide
+# 🌍 Smart Landmark AI Guide 
 
-A professional-grade Image Classification application that identifies global landmarks and generates rich historical context using Generative AI. This project replaces a standard Gradio interface with a modular **FastAPI + NiceGUI** architecture for a production-ready experience.
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.16+-FF6F00?logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
+[![Gemini](https://img.shields.io/badge/Gemini_2.5_Pro-Cloud_AI-8E75B2?logo=google-gemini&logoColor=white)](https://ai.google.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A high-performance, hybrid-cloud Image Classification application. This project utilizes a local **TensorFlow CNN** for rapid identification and leverages **Google Gemini 2.5 Pro** via API to generate rich, bilingual historical insights.
+
+
+
+---
 
 ## 🚀 Key Features
-- **CNN Classification**: Employs a custom TensorFlow model to identify famous landmarks with high confidence.
-- **AI Historical Insights**: Integrates **Google Gemini 2.0 Flash** to generate fascinating 2-sentence histories for identified sites.
-- **Modern Web Interface**: A responsive, server-side UI built with **NiceGUI** and **FastAPI**.
-- **Modular Architecture**: Logic is strictly separated into a UI layer (`main.py`) and an AI Engine (`src/engine.py`).
+- **Hybrid AI Pipeline**: Initial fast-scan with a local `.h5` model; automatic fallback to **Gemini 2.5 Pro Vision** for complex or uncertain landmark identification.
+- **Bilingual Historical Context**: Generates detailed architectural and cultural history in both **English and Hindi**.
+- **Hardware Optimized**: Built to handle high-resolution (**14.4MB+**) images efficiently on modern GPUs like the **RTX 5050**.
+- **Real-Time VRAM Monitoring**: Integrated tracking of system resources to ensure stable performance during heavy inference.
+- **Universal Format Support**: Auto-converts PNG, WebP, and HEIC uploads to model-compliant RGB JPEG format.
+
+---
 
 ## 🛠️ Tech Stack
-- **AI Engine**: TensorFlow, Google GenAI (Gemini)
-- **Web Framework**: NiceGUI, FastAPI
+- **Inference Engine**: TensorFlow 2.16+, Keras 3.0
+- **Cloud Intelligence**: Google Generative AI (Gemini 2.5 Pro SDK)
+- **Web Framework**: NiceGUI (Modern Interface), FastAPI (Backend)
 - **Image Processing**: Pillow, NumPy
-- **Environment**: Python Dotenv (Secrets Management)
+- **System Monitoring**: NVML (Nvidia Management Library)
+
+---
 
 ## 📂 Project Structure
 ```text
 Google-Landmark-AI/
-├── main.py             # Entry point & NiceGUI Web UI
+├── app.py              # Production entry point (FastAPI + NiceGUI mount)
+├── main.py             # Frontend UI components & event logic
 ├── src/                
-│   ├── __init__.py    # Python package marker
-│   └── engine.py      # Core logic (TensorFlow + Gemini)
+│   └── engine.py       # Core AI Engine (CNN Inference + Gemini API)
 ├── models/             
-│   └── landmark_model.h5  # Trained model weights
-├── .env                # API Keys (Excluded from Git)
-├── requirements.txt    # Pinned dependencies
+│   └── landmark_model.h5 # Pre-trained CNN model weights
+├── test_images/        # Sample images for verification
+├── .env                # API Keys & Secrets (Git-ignored)
+├── .gitignore          # Optimized for lean cloud deployment
+├── requirements.txt    # Pinned production dependencies
 └── README.md           # Documentation
 
 ⚙️ Setup & Installation
 1. Prerequisites
-. Python 3.9+
+Python 3.11+
 
-. A Google Gemini API Key
+Nvidia GPU (Required for the pynvml monitoring and local CNN speed)
 
-2. Installation
+Google AI Studio Key (Get it here)
+
+2. Local Setup
 # Clone the repository
 git clone [https://github.com/Aakarshkumar612/Google-Landmark-Image-Classification.git](https://github.com/Aakarshkumar612/Google-Landmark-Image-Classification.git)
 cd Google-Landmark-Image-Classification
 
-# Install dependencies
+# Create and activate virtual environment
+python -m venv venv
+.\venv\Scripts\activate
+
+# Install requirements
 pip install -r requirements.txt
 
-3. Environment Secrets
-Create a .env file in the root directory and add your API key:
-GEMINI_API_KEY=your_actual_api_key_here
+3. Environment Configuration
+Create a .env file in the root directory and add your credentials:
+GEMINI_API_KEY=your_google_api_key_here
+STORAGE_SECRET=create_any_random_string_for_sessions
 
-4. Run the Application
-python -m uvicorn main:app --reload
-Open your browser at http://127.0.0.1:8000.
+4. Running the App
+# Development Mode
+python main.py
 
-📝 License
-Distributed under the MIT License. See LICENSE for more information.
+# Production Mode
+python app.py
 
-### Why this is an improvement:
-* **Refined Tech Stack**: It removes Gradio and adds the more powerful NiceGUI/FastAPI combo.
-* **Modular Description**: It highlights the `src/` folder, which shows you understand software engineering patterns like **Separation of Concerns**.
-* **Clear Setup**: It provides the exact commands needed to get the app running, including the critical `.env` step.
+Visit http://127.0.0.1:8000 in your browser.
 
-## LLM / RAG Status
+🌐 Deployment Strategy
+This project is engineered for easy migration to AWS or Vercel:
 
-- **Current:** LLM (RAG/embeddings) initialization has not been completed in this repository by default. The app will still perform image classification using the local TensorFlow model in `models/landmark_model.h5` and will return bilingual landmark descriptions from local `data/*.txt` files.
-- **Implication:** Retrieval-augmented generation (chat, LLM-produced content, and similarity search using embeddings) will not be available until the heavy initialization step is run.
-- **To enable full LLM/RAG functionality:** run the heavy initializer which downloads embeddings and builds an index. From the repo root:
+Deployment Safety: Includes a specific .gitignore to prevent large binary "bloat," keeping the repository under 250MB.
 
-```powershell
-conda activate landmark_project
-python scripts/init_llm.py 2>&1 | tee init_llm_output.log
-```
+Dependency Management: Uses tensorflow-cpu configurations where GPU hardware is unavailable to save 300MB+ of disk space.
 
-- After successful completion, start the UI and verify via the `Run Full Init (heavy)` and `Verify LLM` buttons at http://127.0.0.1:8000, or inspect `server_debug.log` and `data/index_docs.json` for confirmation.
+📝 1. The LICENSE File
 
-If you prefer to keep the app lightweight and avoid large downloads, the current setup (local model + `data/*.txt`) is fully functional for classification and static bilingual descriptions.
+For a modern AI project, the MIT License is the industry standard. It’s short, simple, and permissive, allowing others to use your code while protecting you from liability.
 
+MIT License
 
+Copyright (c) 2026 Aakarsh Kumar
 
-**Would you like me to help you create a `LICENSE` file for your repository to make it even more professional?**
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-[NiceGUI and FastAPI Tutorial](https://www.youtube.com/watch?v=FDUfaYsFQrc)
-This video is relevant because it demonstrates how to use TensorFlow within a web application context, which is the core of your landmark classification project.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
-http://googleusercontent.com/youtube_content/3
+2. The CONTRIBUTING.md File
+This file is a "welcome mat" for other developers. It explains exactly how they can help you improve the Landmark AI Guide.
+
+# Contributing to Smart Landmark AI Guide
+
+First off, thank you for considering contributing to this project! It’s people like you that make the open-source community such a great place to learn and build.
+
+## 🚀 How Can I Contribute?
+
+### Reporting Bugs
+- Use the [GitHub Issues](https://github.com/Aakarshkumar612/Google-Landmark-Image-Classification/issues) to report bugs.
+- Describe the actual behavior and what you expected to see.
+- Include screenshots and your system specs (GPU, Python version).
+
+### Suggesting Enhancements
+- If you have an idea for a new feature (like "Export to PDF" or "New Landmark Models"), open an issue to discuss it.
+
+### Your First Code Contribution
+1. **Fork** the repository.
+2. Create a new **branch** (`git checkout -b feature/AmazingFeature`).
+3. Make your changes and **test** them locally with `test.py`.
+4. **Commit** your changes (`git commit -m 'Add some AmazingFeature'`).
+5. **Push** to the branch (`git push origin feature/AmazingFeature`).
+6. Open a **Pull Request**.
+
+## 🛠️ Development Setup
+- Follow the installation steps in the `README.md`.
+- Ensure your `.env` file is set up with a valid Gemini API key for testing.
+- **Note:** Never commit your `.env` file!
+
+## 📜 Code of Conduct
+We are committed to providing a friendly, safe, and welcoming environment for all. Please be respectful and constructive in your communication.
+
+---
+*By contributing, you agree that your contributions will be licensed under its MIT License.*

@@ -1,12 +1,41 @@
-# Environment secrets
+# --- Environment & Secrets ---
 .env
+.venv/
+env/
+venv/
+ENV/
 
-# Python cache
+# --- Python Cache & Metadata ---
 __pycache__/
 *.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
 
-# Local IDE settings
+# --- Machine Learning Assets (CRITICAL for Vercel) ---
+# We ignore these because they exceed the 250MB limit easily.
+# Host these externally (e.g., Vercel Blob, AWS S3, or GDrive).
+models/
+*.h5
+*.keras
+*.pb
+*.tflite
+variables/
+
+# --- Dataset & Local Assets ---
+data/
+test_images/
+*.jpg
+*.png
+*.jpeg
+
+# --- Logs & Performance ---
+*.log
+server_debug.log
+.nicegui/
+
+# --- IDE & System ---
 .vscode/
-
-# Large Model files (Optional: keep if under 100MB, otherwise use LFS)
-# models/landmark_model.h5
+.idea/
+.DS_Store
+Thumbs.db
