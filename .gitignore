@@ -1,3 +1,7 @@
+.web
+assets/external/
+*.db
+.states
 # --- Environment & Secrets ---
 .env
 .venv/
