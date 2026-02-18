@@ -1,7 +1,0 @@
-METADATA: Burj Khalifa, Dubai, UAE, World's Tallest Building, Architecture
-
-[ENGLISH SECTION]
-The Burj Khalifa is a skyscraper in Dubai, United Arab Emirates, and is currently the world's tallest building. It has a total height of 829.8 meters (2,722 ft). It was designed by Adrian Smith and was opened in 2010 as part of a new development called Downtown Dubai.
-
-[HINDI SECTION]
-बुर्ज खलीफा संयुक्त अरब अमीरात के दुबई में एक गगनचुंबी इमारत है, और वर्तमान में यह दुनिया की सबसे ऊंची इमारत है। इसकी कुल ऊंचाई 829.8 मीटर (2,722 फीट) है। इसे एड्रियन स्मिथ द्वारा डिजाइन किया गया था और 2010 में डाउनटाउन दुबई नामक एक नए विकास के हिस्से के रूप में खोला गया था।

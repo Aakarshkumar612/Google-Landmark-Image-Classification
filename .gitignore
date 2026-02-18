@@ -1,13 +1,11 @@
-.web
-assets/external/
-*.db
-.states
 # --- Environment & Secrets ---
 .env
+.env.*
 .venv/
 env/
 venv/
 ENV/
+.python-version
 
 # --- Python Cache & Metadata ---
 __pycache__/
@@ -15,31 +13,56 @@ __pycache__/
 *$py.class
 .pytest_cache/
 .mypy_cache/
+*.pyo
 
-# --- Machine Learning Assets (CRITICAL for Vercel) ---
-# We ignore these because they exceed the 250MB limit easily.
-# Host these externally (e.g., Vercel Blob, AWS S3, or GDrive).
+# --- Machine Learning Assets (CRITICAL: 250MB Vercel Limit) ---
+# Models are too heavy for Vercel; host these in Cloud Storage
 models/
 *.h5
 *.keras
 *.pb
 *.tflite
+*.pkl
 variables/
+assets/models/
+
+# --- Frontend (React / Vite / Reflex) ---
+# This covers both your root and the nested 'project' directory
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+build/
+.next/
+.bolt/
+.states/
+.web/
+.parcel-cache/
+.cache/
 
 # --- Dataset & Local Assets ---
+# Ignore the 1000s of images that inflate your project size
 data/
 test_images/
+uploaded_files/
+**/assets/landmarks/
 *.jpg
 *.png
 *.jpeg
+*.csv
+prediction_results.csv
 
 # --- Logs & Performance ---
 *.log
 server_debug.log
 .nicegui/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # --- IDE & System ---
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
+*.swp

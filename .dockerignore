@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+
+# Node / Frontend
+node_modules/
+dist/
+.bolt/
+
+# Project specific
+.git
+.gitignore
+*.h5_weights_backup

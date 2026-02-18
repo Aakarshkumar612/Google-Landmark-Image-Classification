@@ -1,7 +1,0 @@
-METADATA: Taj Mahal, Agra, India, Mughal Architecture, Shah Jahan
-
-[ENGLISH SECTION]
-The Taj Mahal is an ivory-white marble mausoleum on the south bank of the Yamuna river in the Indian city of Agra. It was commissioned in 1632 by the Mughal emperor Shah Jahan to house the tomb of his favorite wife, Mumtaz Mahal. It is considered one of the seven wonders of the world and is a UNESCO World Heritage site.
-
-[HINDI SECTION]
-ताजमहल भारत के आगरा शहर में यमुना नदी के दक्षिण तट पर स्थित एक हाथीदांत-सफेद संगमरमर का मकबरा है। इसे 1632 में मुगल सम्राट शाहजहाँ द्वारा अपनी पसंदीदा पत्नी मुमताज महल के मकबरे के लिए बनवाया गया था। इसे दुनिया के सात अजूबों में से एक माना जाता है और यह यूनेस्को की विश्व धरोहर स्थल है।

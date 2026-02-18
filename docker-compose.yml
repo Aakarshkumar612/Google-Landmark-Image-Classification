@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: landmark_db
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:your_password@db:5432/landmark_db
+
+  frontend:
+    build: ./project-bolt-sb1-q2xyxggn (1)/project
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
