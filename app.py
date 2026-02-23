@@ -1,26 +1,58 @@
 import os
-import time
+from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from typing import Optional, List
 
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
+import google.generativeai as genai
 import pynvml
 from sqlmodel import SQLModel, Field, create_engine, Session, select
 
-# Import your local engine
 from src.engine import LandmarkEngine
 
-# 1. Configuration & Database Setup
-load_dotenv()
-app = FastAPI(title="Landmark.AI Hybrid API")
 
-# Pro-Tip: Ensure your DATABASE_URL in .env matches your PostgreSQL credentials
-# Format: postgresql://username:password@localhost:5432/landmark_db
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
+
+import os
+from contextlib import asynccontextmanager
+# ... rest of your imports
+
+# 1. Environment & AI Configuration
+# find_dotenv() ensures we locate the .env regardless of where uvicorn is called
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"), override=True)
+
+GEMINI_KEY = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
+if GEMINI_KEY:
+    genai.configure(api_key=GEMINI_KEY)
+    print(f"✅ ENGINE SECURE: Gemini configured with key {GEMINI_KEY[:5]}...")
+else:
+    print("❌ CRITICAL: No API Key found in environment variables.")
+
+# 2. Database Setup
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:Aakarsh@localhost:5432/landmark_db")
-engine_db = create_engine(DATABASE_URL, echo=False) # Set echo=True during development to see SQL logs
+engine_db = create_engine(DATABASE_URL, echo=False)
+
+class LandmarkHistory(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(index=True)
+    english_info: str
+    hindi_info: str
+    confidence: float
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+# Modern Lifespan Handler (Replaces @app.on_event("startup"))
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Initialize database tables
+    SQLModel.metadata.create_all(engine_db)
+    yield
+
+# 3. FastAPI App Initialization
+app = FastAPI(title="Landmark.AI Hybrid API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,84 +62,42 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 2. SQLModel: Database Table Definition
-# This model acts as both the database table schema and the data validation layer
-class LandmarkHistory(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    name: str = Field(index=True) # index=True speeds up history lookups by name
-    english_info: str
-    hindi_info: str
-    confidence: float
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
-# Helper to initialize tables
-def create_db_and_tables():
-    """Initializes the PostgreSQL database tables on startup."""
-    SQLModel.metadata.create_all(engine_db)
-
-@app.on_event("startup")
-def on_startup():
-    create_db_and_tables()
-
-# Dependency for database sessions
 def get_session():
-    """Provides a database session for each request."""
     with Session(engine_db) as session:
         yield session
 
-# Constants for AI Engine
+# Initialize Global AI Engine
 MODEL_PATH = "models/landmark_model.h5"
 CLASSES = ["Burj Khalifa", "Eiffel Tower", "Red Fort", "Taj Mahal", "Great Wall of China"]
 engine = LandmarkEngine(MODEL_PATH, CLASSES)
 
-# 3. Data Models for API Responses
 class VRAMStatus(BaseModel):
     gpu_name: str
-    total_mhz: float
-    used_mhz: float
-    free_mhz: float
     usage_percent: float
 
 # 4. API Endpoints
 
 @app.get("/vram", response_model=VRAMStatus)
 async def get_vram_status():
-    """Checks the real-time VRAM status of your RTX 5050."""
-    try:
-        pynvml.nvmlInit()
-        handle = pynvml.nvmlDeviceGetHandleByIndex(0)
-        info = pynvml.nvmlDeviceGetMemoryInfo(handle)
-        name = pynvml.nvmlDeviceGetName(handle)
-        pynvml.nvmlShutdown()
-        
-        return {
-            "gpu_name": name,
-            "total_mhz": info.total / 1024**2,
-            "used_mhz": info.used / 1024**2,
-            "free_mhz": info.free / 1024**2,
-            "usage_percent": (info.used / info.total) * 100
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"GPU Monitoring Failed: {str(e)}")
+    return {
+        "gpu_name": "NVIDIA GPU (Monitoring Offline)",
+        "usage_percent": 0.0
+    }
 
 @app.post("/predict")
-async def predict_landmark(
-    file: UploadFile = File(...), 
-    session: Session = Depends(get_session)
-):
-    """Processes an image and saves the identification to PostgreSQL."""
+async def predict_landmark(file: UploadFile = File(...), session: Session = Depends(get_session)):
     try:
-        # 1. Image Reading
+        # Re-verify configuration to prevent ADC/API Key errors during long sessions
+        if GEMINI_KEY:
+            genai.configure(api_key=GEMINI_KEY)
+
         image_bytes = await file.read()
-        
-        # 2. Identification Logic (Hybrid Engine)
         name, conf = engine.predict(image_bytes)
         
-        if name == "Uncertain":
-            # Fallback to Cloud Vision for unidentified landmarks
+        # Hybrid Logic: Local CNN -> Gemini Vision Fallback
+        if name == "Uncertain" or float(conf) < 0.6:
             result = engine.predict_with_vision(image_bytes)
         else:
-            # Local CNN results + Bilingual Knowledge Retrieval
             raw_history = engine.get_expert_response(name)
             en_part, hi_part = "Info not found.", "जानकारी उपलब्ध नहीं है।"
             
@@ -118,12 +108,12 @@ async def predict_landmark(
                 
             result = {"name": name, "english": en_part, "hindi": hi_part}
 
-        # 3. Database Logging
+        # SQL Logging
         history_entry = LandmarkHistory(
             name=result["name"],
             english_info=result["english"],
             hindi_info=result["hindi"],
-            confidence=conf
+            confidence=float(conf)
         )
         session.add(history_entry)
         session.commit()
@@ -131,20 +121,18 @@ async def predict_landmark(
 
         return result
     except Exception as e:
-        # Pro-Tip: Never return raw system errors; always use HTTPException for security
-        raise HTTPException(status_code=500, detail=f"Landmark Prediction Failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Inference Failed: {str(e)}")
 
 @app.get("/history", response_model=List[LandmarkHistory])
 async def get_search_history(session: Session = Depends(get_session)):
-    """Retrieves the full scan history from the PostgreSQL database."""
     try:
         statement = select(LandmarkHistory).order_by(LandmarkHistory.created_at.desc())
         results = session.exec(statement).all()
         return results
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Could not retrieve history from database.")
+        raise HTTPException(status_code=500, detail="Database Retrieval Failed.")
 
 if __name__ == "__main__":
     import uvicorn
-    # 0.0.0.0 allows access from any network device; set to 127.0.0.1 for local only
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # Bind to 0.0.0.0 for external network accessibility (mobile/demo)
+    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)

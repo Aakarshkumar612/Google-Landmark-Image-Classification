@@ -6,19 +6,23 @@ from PIL import Image
 import google.generativeai as genai
 from dotenv import load_dotenv
 
-# 1. Load Environment Variables (API Key)
-load_dotenv()
+# Load .env before anything else
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env"), override=True)
 
 # Ensure legacy Keras behavior for older models
 os.environ.setdefault('TF_USE_LEGACY_KERAS', '1')
 
+# Hardcoded fallback — guarantees Gemini always works
+GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY") or "AIzaSyDvTwGSlBAjhPhe3pblLvO_LA_Tu5LFQQs"
+genai.configure(api_key=GEMINI_API_KEY)
+print(f"✅ Gemini configured with key: {GEMINI_API_KEY[:8]}...")
+
 class LandmarkEngine:
     def __init__(self, model_path, class_names):
-        # --- LOCAL CNN SETUP (Unchanged) ---
+        # --- LOCAL CNN SETUP ---
         try:
             self.model = tf.keras.models.load_model(model_path)
         except Exception:
-            # Fallback for Keras version mismatches
             from tensorflow.keras import layers, utils
             class DepthwiseConv2DShim(layers.DepthwiseConv2D):
                 def __init__(self, *args, **kwargs):
@@ -28,22 +32,13 @@ class LandmarkEngine:
             self.model = tf.keras.models.load_model(model_path)
         
         self.class_names = class_names
-        self.img_size = (224, 224) 
+        self.img_size = (224, 224)
 
-        # --- GEMINI CLOUD SETUP (The Update) ---
-        api_key = os.getenv("GEMINI_API_KEY")
-        if not api_key:
-            print("CRITICAL WARNING: GEMINI_API_KEY is missing from .env file!")
-        
-        genai.configure(api_key=api_key)
-        # Initialize Gemini 2.5 Pro
-        self.gemini = genai.GenerativeModel('gemini-2.5-pro')
+        # --- GEMINI CLOUD SETUP ---
+        self.gemini = genai.GenerativeModel('gemini-2.5-flash')
 
     def _normalize_image(self, data):
-        """
-        Universal Converter: Turns any image (PNG, WebP, HEIC) 
-        into RGB JPEG bytes for model safety.
-        """
+        """Standardizes images to RGB JPEG bytes to prevent processing errors."""
         try:
             with Image.open(io.BytesIO(data)) as img:
                 img = img.convert('RGB')
@@ -51,13 +46,11 @@ class LandmarkEngine:
                 img.save(buf, format="JPEG")
                 return buf.getvalue()
         except Exception as e:
-            print(f"Image Error: {e}")
+            print(f"Image Normalization Error: {e}")
             return data
 
     def predict(self, image_bytes, threshold=0.90):
-        """
-        Stage 1: Local CNN Prediction (Fast & Free).
-        """
+        """Stage 1: Local CNN Prediction."""
         clean_bytes = self._normalize_image(image_bytes)
         img = Image.open(io.BytesIO(clean_bytes)).resize(self.img_size)
         img_array = tf.keras.utils.img_to_array(img) / 255.0
@@ -69,12 +62,8 @@ class LandmarkEngine:
         return (self.class_names[idx], conf) if conf >= threshold else ("Uncertain", conf)
 
     def predict_with_vision(self, image_bytes):
-        """
-        Stage 2: Gemini 2.5 Pro Vision.
-        Note: This is a synchronous 'def' so 'run.io_bound' in main.py works correctly.
-        """
+        """Stage 2: Gemini Vision Fallback."""
         try:
-            # Prepare image for Gemini
             clean_bytes = self._normalize_image(image_bytes)
             img = Image.open(io.BytesIO(clean_bytes))
             
@@ -86,34 +75,16 @@ class LandmarkEngine:
                 "HINDI_START\n[Detailed history in Hindi]\nHINDI_END"
             )
 
-            # Call Gemini API
             response = self.gemini.generate_content([prompt, img])
             out = response.text
             
-            # Robust Parsing Logic
-            name = "Unknown"
-            if "NAME:" in out:
-                name = out.split("NAME:")[1].split("\n")[0].strip()
-
-            en_info = "No info."
-            if "ENGLISH_START" in out:
-                en_info = out.split("ENGLISH_START")[1].split("ENGLISH_END")[0].strip()
-
-            hi_info = "जानकारी नहीं।"
-            if "HINDI_START" in out:
-                hi_info = out.split("HINDI_START")[1].split("HINDI_END")[0].strip()
+            name = out.split("NAME:")[1].split("\n")[0].strip() if "NAME:" in out else "Unknown"
+            en_info = out.split("ENGLISH_START")[1].split("ENGLISH_END")[0].strip() if "ENGLISH_START" in out else "No info."
+            hi_info = out.split("HINDI_START")[1].split("HINDI_END")[0].strip() if "HINDI_START" in out else "जानकारी नहीं।"
             
-            return {
-                "name": name,
-                "english": en_info,
-                "hindi": hi_info
-            }
+            return {"name": name, "english": en_info, "hindi": hi_info}
         except Exception as e:
-            return {
-                "name": "API Error", 
-                "english": f"Gemini Error: {e}", 
-                "hindi": f"त्रुटि: {e}"
-            }
+            return {"name": "API Error", "english": f"Gemini Error: {e}", "hindi": f"त्रुटि: {e}"}
 
     def get_expert_response(self, name):
         """Retrieves history via Gemini Text Generation."""

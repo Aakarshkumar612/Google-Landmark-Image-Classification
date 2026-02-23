@@ -25,9 +25,9 @@ export const Header = () => {
           </motion.div>
           <div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
-              {t('appTitle')}
-            </h1>
-            <p className="text-xs text-gray-600 dark:text-gray-400">{t('appSubtitle')}</p>
+            Landmark.AI
+          </h1>
+          <p className="text-xs text-gray-600 dark:text-gray-400">Hybrid Vision Intelligence</p>
           </div>
         </div>
 
