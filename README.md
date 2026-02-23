@@ -1,96 +1,96 @@
-🏛️ LLM Based Landmark Image Analyzer
-LLM Based Landmark Image Analyzer is a high-performance, hybrid AI application that identifies global landmarks and provides detailed historical context. By combining Deep Learning (CNN) for rapid image classification with Large Language Models (LLM) for expert knowledge retrieval, the system offers a seamless, bilingual (English/Hindi) user experience.
+# 🏛️ LLM Based Landmark Image Analyzer
+### *A Hybrid Intelligence System for Global Landmark Recognition & Contextual Analysis*
 
-🚀 Live Demo
-Production UI: Visit Vercel Frontend
+[![Frontend Deployment](https://img.shields.io/badge/Frontend-Vercel-black?style=for-the-badge&logo=vercel)](https://llm-based-landmark-git-291d54-aakarsh-kumars-projects-be31a675.vercel.app/)
+[![Backend Deployment](https://img.shields.io/badge/Backend-Render-informational?style=for-the-badge&logo=render)](https://llm-based-landmark-image-analyzer.onrender.com)
+[![Python Version](https://img.shields.io/badge/Python-3.9.25-blue?style=for-the-badge&logo=python)](https://www.python.org/downloads/release/python-3.9.25)
+[![Framework](https://img.shields.io/badge/Framework-FastAPI-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![Database](https://img.shields.io/badge/Database-PostgreSQL-4169E1?style=for-the-badge&logo=postgresql)](https://www.postgresql.org/)
 
-API Endpoint: View Render Backend
+---
 
-✨ Key Features
-Hybrid Inference Pipeline: Optimizes performance by using a local MobileNetV2 CNN for primary identification and Gemini 1.5 Pro as a high-reasoning fallback.
+## 🌟 Project Overview
+In modern computer vision, a single model often struggles to balance speed with deep contextual understanding. **LLM Based Landmark Image Analyzer** solves this by implementing a **Tiered Hybrid Inference Pipeline**. 
 
-Bilingual Intelligence: Delivers architectural and historical insights in both English and Hindi.
+The system leverages a high-speed local **MobileNetV2 (CNN)** for initial classification and an **LLM (Gemini 1.5 Pro)** for complex visual reasoning and expert-level bilingual knowledge retrieval (English/Hindi).
 
-Decoupled Architecture: Distributed deployment with a React frontend on Vercel and a FastAPI backend on Render.
+### 🔗 Live Access
+* **Interactive UI (Vercel)**: [Live Production Link](https://llm-based-landmark-git-291d54-aakarsh-kumars-projects-be31a675.vercel.app/)
+* **Inference API (Render)**: [Backend API Endpoint](https://llm-based-landmark-image-analyzer.onrender.com)
 
-Automated Data Persistence: Every search is logged into a PostgreSQL database using SQLModel for history tracking.
+---
 
-Hardware Monitoring: Real-time VRAM and GPU status reporting via integrated backend health checks.
+## 🏗️ Architectural Excellence
+The project implements a **Decoupled Three-Tier Architecture**, designed for horizontal scalability:
 
-🛠️ Tech Stack
-Backend & AI
-Framework: FastAPI (v0.115.0)
+1.  **Frontend Layer (Vercel)**: A React-based interface (architected via Bolt.new) optimized for low-latency user interactions and high-speed image processing.
+2.  **Logic Tier (Render)**: A **FastAPI** engine that manages the AI logic, model-weight loading for TensorFlow, and secure orchestration of Gemini API calls.
+3.  **Data Tier (PostgreSQL)**: Utilizing **SQLModel** for efficient persistence of inference history, confidence scores, and real-time hardware metrics.
 
-Deep Learning: TensorFlow-CPU (v2.15.1)
 
-LLM SDK: Google Generative AI (v0.8.3)
 
-Environment: Python 3.9.25
+---
 
-Frontend & Design
-UI/UX: React (Architected via Bolt.new)
+## 🧠 Hybrid Inference Pipeline
+This tiered logic ensures 100% identification accuracy even when the local model is uncertain:
 
-Styling: Modern, responsive dark-themed interface
+* **Tier 1: Local Inference (CNN)**
+    * **Engine**: TensorFlow-CPU (MobileNetV2).
+    * **Decision**: If confidence score $C > 0.6$, results are served instantly to reduce latency and API costs.
+* **Tier 2: Cloud Reasoning (Gemini 1.5 Pro Vision)**
+    * **Engine**: Google Generative AI.
+    * **Fallback**: Triggered automatically when Tier 1 is "Uncertain," providing zero-shot visual identification.
+* **Tier 3: Bilingual Synthesis**
+    * Output is dynamically formatted into structured **English** and **Hindi** descriptions for educational depth.
 
-Database & Infrastructure
-ORM: SQLModel / SQLAlchemy
 
-Database: PostgreSQL
 
-Hosting: Vercel (Frontend), Render (Backend & DB)
+---
 
-📂 Project Structure
-Plaintext
-LLM-Based-Landmark-Image-Analyzer/
-├── app.py              # FastAPI Main Application & API Routes
-├── src/
-│   └── engine.py       # Hybrid Inference Engine (CNN + LLM Logic)
-├── models/
-│   └── landmark_model.h5 # Pre-trained CNN Model Weights
-├── requirements.txt    # Frozen Dependencies
-├── .env                # Environment Configurations
-└── README.md           # Documentation
-⚙️ Local Setup & Installation
-Clone the Repository
+## 🛠️ Tech Stack & Dependencies
 
-Bash
-git clone https://github.com/Aakarshkumar612/LLM-Based-Landmark-Image-Analyzer.git
-cd LLM-Based-Landmark-Image-Analyzer
-Create Virtual Environment
+| Category | Technology | Version |
+| :--- | :--- | :--- |
+| **Language** | Python | `3.9.25` |
+| **Backend** | FastAPI | `0.115.0` |
+| **Deep Learning** | TensorFlow-CPU | `2.15.1` |
+| **Generative AI** | Google Generative AI | `0.8.3` |
+| **Database** | SQLModel / PostgreSQL | `0.0.21` / `2.9.9` |
+| **Frontend** | React (Bolt.new) | Production Build |
 
-Bash
-conda create -n landmark_project python=3.9.25
-conda activate landmark_project
-Install Dependencies
+---
 
-Bash
-pip install -r requirements.txt
-Configure Environment Variables
-Create a .env file:
+## ⚙️ Installation & Local Development
 
-Code snippet
-GOOGLE_API_KEY=your_gemini_api_key
-DATABASE_URL=postgresql://user:password@localhost:5432/landmark_db
-Launch Backend
+1.  **Clone the Repository**
+    ```bash
+    git clone [https://github.com/Aakarshkumar612/LLM-Based-Landmark-Image-Analyzer.git](https://github.com/Aakarshkumar612/LLM-Based-Landmark-Image-Analyzer.git)
+    cd LLM-Based-Landmark-Image-Analyzer
+    ```
 
-Bash
-uvicorn app:app --reload
-🏗️ Architecture Flow
-Image Upload: User uploads an image via the Vercel-hosted React UI.
+2.  **Set Up Environment**
+    ```bash
+    conda create -n landmark_project python=3.9.25 -y
+    conda activate landmark_project
+    pip install -r requirements.txt
+    ```
 
-CNN Processing: The FastAPI backend processes the image using a local TensorFlow model.
+3.  **Configuration**
+    Create a `.env` file in the root:
+    ```env
+    GOOGLE_API_KEY=your_gemini_api_key
+    DATABASE_URL=postgresql://user:password@localhost:5432/landmark_db
+    ```
 
-LLM Enhancement: If the local model confidence is low, Gemini 1.5 Pro identifies the landmark and generates bilingual descriptions.
+4.  **Run Server**
+    ```bash
+    uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+    ```
 
-Persistence: The result is saved to PostgreSQL and returned to the UI.
+---
 
-🤝 Contact
-Aakarsh Kumar
-
-Degree: B.Tech in Artificial Intelligence (Final Year)
-
-Institution: Gautam Buddha University
-
-GitHub: @Aakarshkumar612
-
-LinkedIn: Aakarsh Kumar
+## 🤝 Contact
+**Aakarsh Kumar**
+Gautam Buddha University
+* **LinkedIn**: [Aakarsh Kumar](https://www.linkedin.com/in/aakarsh-kumar-608720297/)
+* **GitHub**: [@Aakarshkumar612](https://github.com/Aakarshkumar612)
