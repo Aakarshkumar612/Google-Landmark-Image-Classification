@@ -1,148 +1,96 @@
-# 🌍 Smart Landmark AI Guide 
+🏛️ LLM Based Landmark Image Analyzer
+LLM Based Landmark Image Analyzer is a high-performance, hybrid AI application that identifies global landmarks and provides detailed historical context. By combining Deep Learning (CNN) for rapid image classification with Large Language Models (LLM) for expert knowledge retrieval, the system offers a seamless, bilingual (English/Hindi) user experience.
 
-[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.16+-FF6F00?logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
-[![Gemini](https://img.shields.io/badge/Gemini_2.5_Pro-Cloud_AI-8E75B2?logo=google-gemini&logoColor=white)](https://ai.google.dev/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+🚀 Live Demo
+Production UI: Visit Vercel Frontend
 
-A high-performance, hybrid-cloud Image Classification application. This project utilizes a local **TensorFlow CNN** for rapid identification and leverages **Google Gemini 2.5 Pro** via API to generate rich, bilingual historical insights.
+API Endpoint: View Render Backend
 
+✨ Key Features
+Hybrid Inference Pipeline: Optimizes performance by using a local MobileNetV2 CNN for primary identification and Gemini 1.5 Pro as a high-reasoning fallback.
 
+Bilingual Intelligence: Delivers architectural and historical insights in both English and Hindi.
 
----
+Decoupled Architecture: Distributed deployment with a React frontend on Vercel and a FastAPI backend on Render.
 
-## 🚀 Key Features
-- **Hybrid AI Pipeline**: Initial fast-scan with a local `.h5` model; automatic fallback to **Gemini 2.5 Pro Vision** for complex or uncertain landmark identification.
-- **Bilingual Historical Context**: Generates detailed architectural and cultural history in both **English and Hindi**.
-- **Hardware Optimized**: Built to handle high-resolution (**14.4MB+**) images efficiently on modern GPUs like the **RTX 5050**.
-- **Real-Time VRAM Monitoring**: Integrated tracking of system resources to ensure stable performance during heavy inference.
-- **Universal Format Support**: Auto-converts PNG, WebP, and HEIC uploads to model-compliant RGB JPEG format.
+Automated Data Persistence: Every search is logged into a PostgreSQL database using SQLModel for history tracking.
 
----
+Hardware Monitoring: Real-time VRAM and GPU status reporting via integrated backend health checks.
 
-## 🛠️ Tech Stack
-- **Inference Engine**: TensorFlow 2.16+, Keras 3.0
-- **Cloud Intelligence**: Google Generative AI (Gemini 2.5 Pro SDK)
-- **Web Framework**: NiceGUI (Modern Interface), FastAPI (Backend)
-- **Image Processing**: Pillow, NumPy
-- **System Monitoring**: NVML (Nvidia Management Library)
+🛠️ Tech Stack
+Backend & AI
+Framework: FastAPI (v0.115.0)
 
----
+Deep Learning: TensorFlow-CPU (v2.15.1)
 
-## 📂 Project Structure
-```text
-Google-Landmark-AI/
-├── app.py              # Production entry point (FastAPI + NiceGUI mount)
-├── main.py             # Frontend UI components & event logic
-├── src/                
-│   └── engine.py       # Core AI Engine (CNN Inference + Gemini API)
-├── models/             
-│   └── landmark_model.h5 # Pre-trained CNN model weights
-├── test_images/        # Sample images for verification
-├── .env                # API Keys & Secrets (Git-ignored)
-├── .gitignore          # Optimized for lean cloud deployment
-├── requirements.txt    # Pinned production dependencies
+LLM SDK: Google Generative AI (v0.8.3)
+
+Environment: Python 3.9.25
+
+Frontend & Design
+UI/UX: React (Architected via Bolt.new)
+
+Styling: Modern, responsive dark-themed interface
+
+Database & Infrastructure
+ORM: SQLModel / SQLAlchemy
+
+Database: PostgreSQL
+
+Hosting: Vercel (Frontend), Render (Backend & DB)
+
+📂 Project Structure
+Plaintext
+LLM-Based-Landmark-Image-Analyzer/
+├── app.py              # FastAPI Main Application & API Routes
+├── src/
+│   └── engine.py       # Hybrid Inference Engine (CNN + LLM Logic)
+├── models/
+│   └── landmark_model.h5 # Pre-trained CNN Model Weights
+├── requirements.txt    # Frozen Dependencies
+├── .env                # Environment Configurations
 └── README.md           # Documentation
+⚙️ Local Setup & Installation
+Clone the Repository
 
-⚙️ Setup & Installation
-1. Prerequisites
-Python 3.11+
+Bash
+git clone https://github.com/Aakarshkumar612/LLM-Based-Landmark-Image-Analyzer.git
+cd LLM-Based-Landmark-Image-Analyzer
+Create Virtual Environment
 
-Nvidia GPU (Required for the pynvml monitoring and local CNN speed)
+Bash
+conda create -n landmark_project python=3.9.25
+conda activate landmark_project
+Install Dependencies
 
-Google AI Studio Key (Get it here)
-
-2. Local Setup
-# Clone the repository
-git clone [https://github.com/Aakarshkumar612/Google-Landmark-Image-Classification.git](https://github.com/Aakarshkumar612/Google-Landmark-Image-Classification.git)
-cd Google-Landmark-Image-Classification
-
-# Create and activate virtual environment
-python -m venv venv
-.\venv\Scripts\activate
-
-# Install requirements
+Bash
 pip install -r requirements.txt
+Configure Environment Variables
+Create a .env file:
 
-3. Environment Configuration
-Create a .env file in the root directory and add your credentials:
-GEMINI_API_KEY=your_google_api_key_here
-STORAGE_SECRET=create_any_random_string_for_sessions
+Code snippet
+GOOGLE_API_KEY=your_gemini_api_key
+DATABASE_URL=postgresql://user:password@localhost:5432/landmark_db
+Launch Backend
 
-4. Running the App
-# Development Mode
-python main.py
+Bash
+uvicorn app:app --reload
+🏗️ Architecture Flow
+Image Upload: User uploads an image via the Vercel-hosted React UI.
 
-# Production Mode
-python app.py
+CNN Processing: The FastAPI backend processes the image using a local TensorFlow model.
 
-Visit http://127.0.0.1:8000 in your browser.
+LLM Enhancement: If the local model confidence is low, Gemini 1.5 Pro identifies the landmark and generates bilingual descriptions.
 
-🌐 Deployment Strategy
-This project is engineered for easy migration to AWS or Vercel:
+Persistence: The result is saved to PostgreSQL and returned to the UI.
 
-Deployment Safety: Includes a specific .gitignore to prevent large binary "bloat," keeping the repository under 250MB.
+🤝 Contact
+Aakarsh Kumar
 
-Dependency Management: Uses tensorflow-cpu configurations where GPU hardware is unavailable to save 300MB+ of disk space.
+Degree: B.Tech in Artificial Intelligence (Final Year)
 
-📝 1. The LICENSE File
+Institution: Gautam Buddha University
 
-For a modern AI project, the MIT License is the industry standard. It’s short, simple, and permissive, allowing others to use your code while protecting you from liability.
+GitHub: @Aakarshkumar612
 
-MIT License
-
-Copyright (c) 2026 Aakarsh Kumar
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-2. The CONTRIBUTING.md File
-This file is a "welcome mat" for other developers. It explains exactly how they can help you improve the Landmark AI Guide.
-
-# Contributing to Smart Landmark AI Guide
-
-First off, thank you for considering contributing to this project! It’s people like you that make the open-source community such a great place to learn and build.
-
-## 🚀 How Can I Contribute?
-
-### Reporting Bugs
-- Use the [GitHub Issues](https://github.com/Aakarshkumar612/Google-Landmark-Image-Classification/issues) to report bugs.
-- Describe the actual behavior and what you expected to see.
-- Include screenshots and your system specs (GPU, Python version).
-
-### Suggesting Enhancements
-- If you have an idea for a new feature (like "Export to PDF" or "New Landmark Models"), open an issue to discuss it.
-
-### Your First Code Contribution
-1. **Fork** the repository.
-2. Create a new **branch** (`git checkout -b feature/AmazingFeature`).
-3. Make your changes and **test** them locally with `test.py`.
-4. **Commit** your changes (`git commit -m 'Add some AmazingFeature'`).
-5. **Push** to the branch (`git push origin feature/AmazingFeature`).
-6. Open a **Pull Request**.
-
-## 🛠️ Development Setup
-- Follow the installation steps in the `README.md`.
-- Ensure your `.env` file is set up with a valid Gemini API key for testing.
-- **Note:** Never commit your `.env` file!
-
-## 📜 Code of Conduct
-We are committed to providing a friendly, safe, and welcoming environment for all. Please be respectful and constructive in your communication.
-
----
-*By contributing, you agree that your contributions will be licensed under its MIT License.*
+LinkedIn: Aakarsh Kumar
