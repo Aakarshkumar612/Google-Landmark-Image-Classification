@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: landmark-ai-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GOOGLE_API_KEY
+        value: AIzaSyDvTwGSlBAjhPhe3pblLvO_LA_Tu5LFQQs
+      - key: GEMINI_API_KEY
+        value: AIzaSyDvTwGSlBAjhPhe3pblLvO_LA_Tu5LFQQs
+      - key: DATABASE_URL
+        fromDatabase:
+          name: landmark-db
+          property: connectionString
+
+databases:
+  - name: landmark-db
+    plan: free
