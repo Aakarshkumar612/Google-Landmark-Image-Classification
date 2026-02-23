@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv, find_dotenv
 import google.generativeai as genai
-import pynvml
+
 from sqlmodel import SQLModel, Field, create_engine, Session, select
 
 from src.engine import LandmarkEngine
