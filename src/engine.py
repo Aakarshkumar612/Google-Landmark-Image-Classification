@@ -12,8 +12,10 @@ load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env
 # Ensure legacy Keras behavior for older models
 os.environ.setdefault('TF_USE_LEGACY_KERAS', '1')
 
-# Hardcoded fallback — guarantees Gemini always works
-GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY") or "AIzaSyDvTwGSlBAjhPhe3pblLvO_LA_Tu5LFQQs"
+# Securely load API key from environment only — never hardcode
+GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    raise ValueError("❌ CRITICAL: No Gemini API key found in environment variables!")
 genai.configure(api_key=GEMINI_API_KEY)
 print(f"✅ Gemini configured with key: {GEMINI_API_KEY[:8]}...")
 
