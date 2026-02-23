@@ -1,6 +1,6 @@
 import { PredictionResponse, VRAMResponse } from '../types';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = 'https://llm-based-landmark-image-analyzer.onrender.com';
 
 export const predictLandmark = async (imageFile: File): Promise<PredictionResponse> => {
   const formData = new FormData();
